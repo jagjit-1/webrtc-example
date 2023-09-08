@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on("iceCandidate", ({ targetUser, candidate }) => {
-        console.log("emitting candidate from ", socket.id, "to ", targetUser)
+        //console.log("emitting candidate from ", socket.id, "to ", targetUser)
         socket.to(targetUser).emit("iceCandidate", {
             candidate,
             sourceUser: socket.id
@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
 
 
     socket.on("iceCandidateReply", ({ targetUser, candidate }) => {
-        console.log("emitting candidate reply from ", socket.id, "to ", targetUser)
+        //console.log("emitting candidate reply from ", socket.id, "to ", targetUser)
         io.to(targetUser).emit("iceCandidateReply", {
             candidate,
             sourceUser: socket.id

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-export const Video = ({ user, stream }) => {
+export const Video = ({ user, stream, videoStyle }) => {
     console.log(user, stream)
     const videoRef = useRef();
     useEffect(() => {
@@ -11,9 +11,9 @@ export const Video = ({ user, stream }) => {
 
     return (
         <div>
-            <p>video for {user}</p>
+            {user ? <p>video for {user}</p> : null}
             <div>
-                <video style={{ borderRadius: 10, width: 200, height: 200, border: "1px solid black" }} ref={videoRef} muted width="100%" autoPlay={true} playsInline={true} />
+                <video style={{ borderRadius: 10, width: 200, height: 200, ...videoStyle }} ref={videoRef} muted width="100%" autoPlay={true} playsInline={true} />
             </div>
         </div>
     )

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import socketIO from "socket.io-client";
 import { Video } from "./Video";
+import { Typography, Box, Button, Grid } from "@mui/material";
 
 const peerConnectionConfig = {
     iceServers: [
@@ -85,14 +86,28 @@ function MeetingPage() {
                 };
             })
         })
+        return () => s.close()
     }, []);
+
+    useEffect(() => {
+        return () => {
+            if (userVideoStream) {
+                userVideoStream.getTracks().forEach((track) => {
+                    console.log(track, "unmonted")
+
+                    track.stop();
+
+                });
+            }
+        }
+    }, [userVideoStream])
 
     useEffect(() => {
         const handleJoinMetting = async () => {
             try {
                 socket.emit("join", { roomId });
 
-                const res = await fetch("http://localhost:3000/meeting/users/123");
+                const res = await fetch("http://localhost:3000/meeting/users/" + roomId);
                 const result = await res.json();
                 console.log("users in room", result)
                 result.users.map(async user => {
@@ -117,16 +132,26 @@ function MeetingPage() {
 
 
     if (!meetingJoined) {
-        return <button onClick={() => setMeetingJoined(true)}>join meeting for room id -123</button>
+        return <Box sx={{ margin: "40px auto 10px auto", maxWidth: "70%", textAlign: "center" }}>
+            <Typography variant="h2">Camera Preview</Typography>
+            <br />
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-evenly" }}>
+                <Video videoStyle={{ width: 500, height: "auto" }} stream={userVideoStream ? userVideoStream : null} />
+                <Button onClick={() => setMeetingJoined(true)} style={{ width: 300, height: 50 }} variant="contained">Join Meeting</Button>
+            </Box>
+
+        </Box>
     }
     console.log(videoStream, connections)
-    return <div>
+    return <Box>
         <div>Meeting Room</div>
 
-        <div>
-            {Object.keys(videoStream).map(user => <Video key={user} user={user} stream={videoStream[user]} />)}
-        </div>
-    </div>
+        <Grid container spacing={6}>
+            {Object.keys(videoStream).map(user => <Grid key={user} item xs={4} md={3}>
+                <Video user={user} videoStyle={{ width: 500, height: "auto" }} stream={userVideoStream ? userVideoStream : null} />
+            </Grid>)}
+        </Grid>
+    </Box>
 }
 
 
