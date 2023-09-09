@@ -1,10 +1,9 @@
 import { useRef, useEffect } from "react";
 
 export const Video = ({ user, stream, videoStyle }) => {
-    console.log(user, stream)
     const videoRef = useRef();
     useEffect(() => {
-        if (videoRef && videoRef.current) {
+        if (videoRef && videoRef.current && stream) {
             videoRef.current.srcObject = stream;
         }
     }, [videoRef, stream])
@@ -12,9 +11,10 @@ export const Video = ({ user, stream, videoStyle }) => {
     return (
         <div>
             {user ? <p>video for {user}</p> : null}
-            <div>
-                <video style={{ borderRadius: 10, width: 200, height: 200, ...videoStyle }} ref={videoRef} muted width="100%" autoPlay={true} playsInline={true} />
-            </div>
+            {stream ?
+                <div>
+                    <video style={{ borderRadius: 10, width: 200, height: 200, ...videoStyle }} ref={videoRef} muted autoPlay={true} playsInline={true} />
+                </div> : <div>No Video Available</div>}
         </div>
     )
 }
